@@ -81,6 +81,7 @@ h2{font-size:20px}
 .stop::before{content:"";position:absolute;left:66px;top:18px;bottom:-4px;width:2px;background:repeating-linear-gradient(var(--line) 0 5px,transparent 5px 9px)}
 .stop:last-child::before{display:none}
 .time{text-align:right;padding-top:9px;font:700 15px/1.2 var(--f-num);font-variant-numeric:tabular-nums;color:var(--ink)}
+.time .end{display:block;margin-top:3px;font:500 12px/1.2 var(--f-num);color:var(--muted)}
 .time.soft{font:500 12.5px/1.3 var(--f-body);color:var(--muted);padding-top:11px}
 .dot{width:14px;height:14px;border-radius:50%;background:var(--card);border:3px solid var(--c,var(--sage));margin-top:12px;justify-self:center;position:relative;z-index:1}
 .stop.fixed .dot{background:var(--c,var(--sage))}
@@ -277,34 +278,32 @@ const DAYS = [
  {id:"day1", date:"10/15", wd:"四", iso:"2026-10-15", c:"#7DA897", title:"抵達福岡", sub:"台北 → 福岡 · 博多、中洲",
   stops:[
    {t:"14:30", fixed:1, k:"plane", h:"台北出發，飛往福岡", flights:[["14:30","台北 → 福岡","17:55",""]], q:"福岡空港 国際線ターミナル"},
-   {t:"抵達後", k:"train", h:"機場搭計程車去飯店", nav:HOTEL_A.q},
-   {t:"入住", k:"bed", h:"飯店 check in", q:HOTEL_A.q},
-   {t:"晚上", k:"cafe", h:"Fuk Coffee", q:"FUK COFFEE 福岡"},
-   {t:"晚餐", k:"food", h:"一蘭拉麵", q:"一蘭 博多"},
-   {t:"宵夜", k:"walk", h:"中洲屋台吃宵夜、散步", q:"中洲屋台"}
+   {t:"18:25", fixed:1, k:"train", h:"機場搭計程車去飯店", nav:HOTEL_A.q},
+   {t:"18:50", te:"19:10", fixed:1, k:"bed", h:"飯店 check in ＋ Fuk Coffee", qs:[["飯店",HOTEL_A.q],["Fuk Coffee","FUK COFFEE 福岡"]]},
+   {t:"19:30", te:"20:10", fixed:1, k:"food", h:"一蘭拉麵", q:"一蘭 博多"},
+   {t:"20:10", te:"21:00", fixed:1, k:"walk", h:"中洲屋台吃宵夜、散步", q:"中洲屋台"}
   ], stay:HOTEL_A},
  {id:"day2", date:"10/16", wd:"五", iso:"2026-10-16", c:"#8E9CC9", title:"北九州一日遊", sub:"小倉 · 門司港 · 皿倉山",
   stops:[
-   {t:"早餐", k:"food", h:"The full full hakata", q:"the full full hakata"},
-   {t:"上午", k:"spot", h:"小倉城", q:"小倉城"},
+   {t:"8:00", fixed:1, k:"food", h:"早餐：Dacomecca", p:"7:40 從飯店出發", q:"DACOMECCA 博多"},
+   {t:"9:00", fixed:1, k:"spot", h:"出發前往小倉城", q:"小倉城"},
    {t:"12:00", fixed:1, k:"food", h:"午餐：伽哩本舖", q:"伽哩本舗 門司港"},
    {t:"下午", k:"spot", h:"門司港懷舊地區", p:"門司港レトロ，下午慢慢逛", q:"門司港レトロ"},
-   {t:"傍晚", k:"spot", h:"皿倉山", p:"傍晚上山，一路待到夜景", q:"皿倉山"}
+   {t:"傍晚", k:"spot", h:"皿倉山", p:"傍晚上山，一路待到夜景", q:"皿倉山"},
+   {t:"20:00", fixed:1, k:"food", h:"Shin Shin 拉麵", q:"博多らーめん ShinShin"}
   ], stay:HOTEL_A},
  {id:"day3", date:"10/17", wd:"六", iso:"2026-10-17", c:"#E39A7E", title:"由布院", sub:"特急ゆふ · 湯之坪街道 · 金鱗湖",
   stops:[
-   {t:"出發", k:"train", h:"從博多搭 Yufu 3 號到由布院", p:"特急ゆふ3号：博多站 → 由布院站", q:"博多駅"},
-   {t:"抵達後", k:"walk", h:"湯之坪街道（Yunotsubo Kaido）", q:"湯の坪街道"},
-   {t:"入住", k:"bed", h:"高のや「月」", map:HOTEL_B.map},
-   {t:"散步", k:"spot", h:"金鱗湖（Lake Kinrin）", q:"金鱗湖"},
-   {t:"晚上", k:"bag", h:"超市買晚餐＋隔天早餐", q:"由布院 スーパー"}
+   {t:"10:11", te:"12:27", fixed:1, k:"train", h:"從博多搭 Yufu 3 號到由布院", p:"特急ゆふ3号：博多站 → 由布院站", q:"博多駅"},
+   {t:"12:27", te:"14:40", fixed:1, k:"walk", h:"湯之坪街道＋金鱗湖＋超市買晚餐和早餐", qs:[["湯之坪街道","湯の坪街道"],["金鱗湖","金鱗湖"],["超市","由布院 スーパー"]]},
+   {t:"15:00", fixed:1, k:"bed", h:"入住 高のや「月」", map:HOTEL_B.map}
   ], stay:HOTEL_B},
  {id:"day4", date:"10/18", wd:"日", iso:"2026-10-18", c:"#6FA3B0", title:"由布院回博多", sub:"金鱗湖 · 釜飯 · 藥院",
   stops:[
    {t:"早餐", k:"food", h:"早餐自理"},
    {t:"上午", k:"spot", h:"金鱗湖 again", p:"早上再去看一次湖面", q:"金鱗湖"},
    {t:"12:00", fixed:1, k:"food", h:"由布釜飯「心」站前店", q:"ゆふ釜飯 心 駅前店"},
-   {t:"午後", k:"train", h:"搭 Yufu 4 號回博多", p:"特急ゆふ4号：由布院站 → 博多站", q:"由布院駅"},
+   {t:"14:15", fixed:1, k:"train", h:"搭 Yufu 4 號回博多", p:"特急ゆふ4号：由布院站 → 博多站", q:"由布院駅"},
    {t:"抵達", k:"home", h:"飯店放行李", q:HOTEL_C.q},
    {t:"17:30", fixed:1, k:"food", h:"晚餐：藥院燒肉", q:"薬院 焼肉"},
    {t:"飯後", k:"bag", h:"藥院附近逛小物店", p:"藥院很多小物店，可以在附近逛逛", q:"薬院駅"},
@@ -313,11 +312,11 @@ const DAYS = [
  {id:"day5", date:"10/19", wd:"一", iso:"2026-10-19", c:"#C79AB8", title:"太宰府＋柳川一日遊", sub:"西鐵電車 · 太宰府 · 柳川遊船",
   stops:[
    {t:"早餐", k:"food", h:"飯店早餐"},
-   {t:"出發", k:"walk", h:"走到西鐵藥院站搭車", nav:"西鉄薬院駅"},
-   {t:"上午", k:"spot", h:"搭到太宰府", q:"太宰府天満宮"},
-   {t:"午餐", k:"food", h:"拉麵 魁源 太宰府店", q:"魁源 太宰府"},
-   {t:"午後", k:"train", h:"太宰府 → 西鐵二日市 → 西鐵柳川", q:"西鉄柳川駅"},
-   {t:"下午", k:"spot", h:"柳川遊船體驗", q:"柳川 川下り"},
+   {t:"8:40", fixed:1, k:"walk", h:"走到西鐵藥院站搭車", nav:"西鉄薬院駅"},
+   {t:"9:20", fixed:1, k:"spot", h:"搭到太宰府", q:"太宰府天満宮"},
+   {t:"11:30", fixed:1, k:"food", h:"午餐：拉麵 魁源 太宰府店", q:"魁源 太宰府"},
+   {t:"12:40", te:"14:00", fixed:1, k:"train", h:"太宰府 → 西鐵二日市 → 西鐵柳川", p:"14:00 抵達西鐵柳川站", q:"西鉄柳川駅"},
+   {t:"14:00", fixed:1, k:"spot", h:"柳川遊船體驗", q:"柳川 川下り"},
    {t:"回程", k:"train", h:"西鐵柳川站搭回西鐵天神站", p:"車程約 50 分鐘", q:"西鉄福岡（天神）駅"},
    {t:"19:00", fixed:1, k:"food", h:"晚餐：博多水炊鍋専門 橙", q:"博多水炊き専門 橙"}
   ], stay:HOTEL_C},
@@ -351,16 +350,18 @@ function stayCard(s){
 
 function stopHTML(s){
   const href = s.map || ((s.q||s.nav) && G(s.q||s.nav));
-  const links = href ? `<a class="btn sm primary" href="${href}" target="_blank" rel="noopener">${ic("map")}地圖</a>` : "";
+  const links = s.qs
+    ? s.qs.map(([l,q])=>`<a class="btn sm primary" href="${G(q)}" target="_blank" rel="noopener">${ic("map")}${l}</a>`).join("")
+    : href ? `<a class="btn sm primary" href="${href}" target="_blank" rel="noopener">${ic("map")}地圖</a>` : "";
   const fl = s.flights ? `<div class="flights">${s.flights.map(f=>`<div class="flight"><b>${f[0]}</b><span>${f[1]}</span><b>${f[2]}</b>${f[3]?`<span class="tag">${f[3]}</span>`:""}</div>`).join("")}</div>` : "";
   return `<li class="stop${s.fixed?" fixed":""}">
-    <div class="time${s.fixed?"":" soft"}">${s.t}</div><span class="dot"></span>
+    <div class="time${s.fixed?"":" soft"}">${s.t}${s.te?`<small class="end">～${s.te}</small>`:""}</div><span class="dot"></span>
     <div class="box"><span class="kind">${ic(s.k)}${KIND[s.k]}</span><h3>${s.h}</h3>${s.p?`<p>${s.p}</p>`:""}${fl}${links?`<div class="actions">${links}</div>`:""}</div>
   </li>`;
 }
 
 function routeURL(d){
-  const pts = d.stops.map(s=>s.q||s.nav).filter(Boolean);
+  const pts = d.stops.flatMap(s=>s.qs ? s.qs.map(x=>x[1]) : [s.q||s.nav]).filter(Boolean);
   const uniq = pts.filter((p,i)=>p!==pts[i-1]);
   return "https://www.google.com/maps/dir/" + uniq.map(encodeURIComponent).join("/");
 }
